@@ -3,8 +3,8 @@ const btnAddDeseo = document.querySelectorAll(".btnAddDeseo");
 const btnAddCarrito = document.querySelectorAll(".btnAddCarrito");
 const btnDeseo = document.getElementById("btnCantidadDeseo");
 const btnCarrito = document.getElementById("btnCantidadCarrito");
-const verCarrito = document.querySelector("#verCarrito");
-
+const verCarrito = document.querySelector('#verCarrito');
+const tableListaCarrito = document.querySelector('#tableListaCarrito tbody');
 
 
 
@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //Ver carrito
     const myModal = new bootstrap.Modal(document.getElementById('myModal'))
     verCarrito.addEventListener('click',function(){
+       getListaCarrito();
         myModal.show();
     })
 });
@@ -126,7 +127,7 @@ function getListaCarrito(){
                     <td><button class="btn btn-danger" type="button">Eliminar</button></td>
                 </tr>`;
             });
-            tablaLista.innerHTML = html;
+            tablaListaCarrito.innerHTML = html;
         }
     }
 }

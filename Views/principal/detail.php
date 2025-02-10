@@ -1,5 +1,4 @@
 <?php include_once 'Views/template-principal/header.php'; ?>
-
     <!-- Open Content -->
     <section class="bg-light">
         <div class="container pb-5">
@@ -15,7 +14,25 @@
                     <div class="card">
                         <div class="card-body">
                             <h1 class="h2"><?php echo $data['producto']['nombre_producto']; ?></h1>
-                            <p class="h3 py-2"><?php echo MONEDA.' '. $data['producto']['costo_producto']; ?></p>
+                            <?php if (!empty($data['medidas'])) { ?>
+                                    <hr>
+                                    <h5>Selecciona la medida</h5>
+                                    <select id="selectMedida" class="form-select w-50">
+                                        <option disabled selected>Elige una opción...</option>
+                                        <?php foreach ($data['medidas'] as $m) { ?>
+                                            <option 
+                                            value="<?php echo $m['id_producto_medida']; ?>" 
+                                            data-price="<?php echo $m['costo_producto']; ?>">
+                                            <?php echo $m['nombre_medida']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+
+                                    <div class="mt-3">
+                                        <span>Precio: </span>
+                                        <strong id="precioMedida">$ 0.00</strong>
+                                    </div>
+                                <?php } ?>
                             <p class="py-2">
                                 <i class="fa fa-star text-warning"></i>
                                 <i class="fa fa-star text-warning"></i>
@@ -48,10 +65,8 @@
                                         </ul>
                                     </div>
                                 </div>
+                                
                                 <div class="row pb-3">
-                                    <div class="col d-grid">
-                                        <button type="submit" class="btn btn-success btn-lg " name="submit" value="buy">Añadir a carrito</button>
-                                    </div>
                                     <div class="col d-grid">
                                         <button type="button" class="btn btn-success btn-lg" id="btnAddCart">Agregar</button>
                                     </div>
@@ -77,6 +92,50 @@
     <script src="<?php echo BASE_URL; ?>assets/js/sweetalert2.all.min.js"></script>
 
     <!-- Start Slider Script -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const selectMedida = document.getElementById('selectMedida');
+            const precioMedida = document.getElementById('precioMedida');
+
+            if (selectMedida) {
+                selectMedida.addEventListener('change', function() {
+                    const opcion = this.options[this.selectedIndex];
+                    const precio = opcion.getAttribute('data-price');
+                    precioMedida.textContent = '$ ' + precio;
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos del DOM
+            const btnMinus = document.getElementById('btn-minus');
+            const btnPlus = document.getElementById('btn-plus');
+            const varValue = document.getElementById('var-value');
+            const productQuantity = document.getElementById('product-quanity');
+
+            // Convertimos la cantidad inicial a número
+            let quantity = parseInt(productQuantity.value);
+
+            // Botón menos
+            btnMinus.addEventListener('click', function() {
+                if (quantity > 1) {
+                    quantity -= 1; // Resta de 1
+                    varValue.textContent = quantity;
+                    productQuantity.value = quantity;
+                }
+            });
+
+            // Botón más
+            btnPlus.addEventListener('click', function() {
+                quantity += 1; // Suma de 1
+                varValue.textContent = quantity;
+                productQuantity.value = quantity;
+            });
+    });
+    </script>
     <script src="<?php echo BASE_URL; ?>assets/js/slick.min.js"></script>
     <script>
         $('#carousel-related-product').slick({

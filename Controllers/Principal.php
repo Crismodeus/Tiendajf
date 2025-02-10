@@ -21,10 +21,15 @@ class Principal extends Controller
     //vista Productos
     public function detail($id_producto)
     {
+
         $data['producto'] = $this->model->getProducto($id_producto);
         $data['title'] = 'Nuestros Productos';
+    
+        $data['medidas'] = $this->model->getMedidas($id_producto);
+    
         $this->views->getView('principal', "detail", $data);
     }
+    
 
 
       //vista Productos-Especialidades
@@ -44,7 +49,7 @@ class Principal extends Controller
             }
         }
         $pagina = (empty($page)) ? 1 : $page ;
-        $porpagina=12;
+        $porpagina=20;
         $desde=($pagina - 1)* $porpagina;
 
         
@@ -62,16 +67,27 @@ class Principal extends Controller
     //vista Tienda
     public function shop($page)
     {
-        $pagina = (empty($page)) ? 1 : $page ;
-        $porpagina=30;
-        $desde=($pagina - 1)* $porpagina;
+        $pagina = (empty($page)) ? 1 : $page;
+        $porpagina = 20;
+        $desde = ($pagina - 1) * $porpagina;
 
         $data['title'] = 'Nuestros Productos';
-        $data['productos'] = $this->model->getProductos($desde,$porpagina);
+        // Obtener productos (sin medidas)
+        $productos = $this->model->getProductos($desde, $porpagina);
+
+        // A cada producto, le agregamos un sub-array con sus medidas
+        foreach ($productos as $key => $prod) {
+            $productos[$key]['medidas'] = $this->model->getMedidas($prod['id_producto']);
+        }
+
+        $data['productos'] = $productos;
         $data['especialidad'] = $this->model->getEspecialidad();
-        $data['pagina']=$pagina;
+        $data['pagina'] = $pagina;
+
+        // Cantidad total de productos para la paginación
         $paginas = $this->model->getTotalProductos();
         $data['total'] = ceil($paginas['total'] / $porpagina);
+
         $this->views->getView('principal', "shop", $data);
     }
 
@@ -89,7 +105,7 @@ class Principal extends Controller
         $array = array();
 
         foreach ($json as $producto) {
-            $result =$this->model->getListaCarrito($producto['id_producto']);
+            $result =$this->model->getProductoEspec1($producto['id_producto']);
             $data['id_producto'] = $result['id_producto'];
             $data['nombre_producto'] = $result['nombre_producto'];
             $data['costo_producto'] = $result['costo_producto'];
@@ -97,6 +113,7 @@ class Principal extends Controller
             $data['cantidad'] = $producto['cantidad'];
             array_push($array, $data);
         }
+        $array['moneda'] = MONEDA;
         echo json_encode($array, JSON_UNESCAPED_UNICODE);
         die();
     }

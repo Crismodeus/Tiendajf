@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class= "modal-body">
-                <table class="table table-bordered table-striped table-hover">
+                <table class="table table-bordered table-striped table-hover" id="tableListaCarrito">
                     <thead>
                         <tr>
 
